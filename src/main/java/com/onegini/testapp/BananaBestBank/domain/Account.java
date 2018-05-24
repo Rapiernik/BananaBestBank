@@ -28,4 +28,21 @@ public class Account {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    public Account increase(Double amount) {
+
+        return getConvertedAmount(this.balance + amount);
+    }
+
+    public Account decrease(Double amount) {
+
+        return getConvertedAmount(this.balance - amount);
+    }
+
+    private Account getConvertedAmount(double v) {
+        BigDecimal bd = new BigDecimal(Double.toString(v));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        this.balance = bd.doubleValue();
+        return this;
+    }
 }

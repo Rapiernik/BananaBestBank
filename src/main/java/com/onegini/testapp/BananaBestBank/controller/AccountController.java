@@ -1,13 +1,11 @@
 package com.onegini.testapp.BananaBestBank.controller;
 
 import com.onegini.testapp.BananaBestBank.domain.Account;
+import com.onegini.testapp.BananaBestBank.domain.RequestData;
 import com.onegini.testapp.BananaBestBank.exception.BananaBankBusinessException;
 import com.onegini.testapp.BananaBestBank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AccountController {
@@ -19,5 +17,19 @@ public class AccountController {
     public Account checkBalanceByUserId(@PathVariable("userId") Long id) throws BananaBankBusinessException {
 
         return accountService.checkUsersBalance(id);
+    }
+
+    @RequestMapping(value = "/balance/increase/user/{userId}", method = RequestMethod.POST)
+    public void increaseUsersBalance(@RequestBody RequestData requestData, @PathVariable("userId") Long id)
+            throws BananaBankBusinessException {
+
+        accountService.increaseUsersBalance(requestData, id);
+    }
+
+    @RequestMapping(value = "/balance/decrease/user/{userId}", method = RequestMethod.POST)
+    public void decreaseUsersBalance(@RequestBody RequestData requestData, @PathVariable("userId") Long id)
+            throws BananaBankBusinessException {
+
+        accountService.decreaseUsersBalance(requestData, id);
     }
 }
