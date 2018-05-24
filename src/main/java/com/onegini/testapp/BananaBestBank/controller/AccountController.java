@@ -2,10 +2,13 @@ package com.onegini.testapp.BananaBestBank.controller;
 
 import com.onegini.testapp.BananaBestBank.domain.Account;
 import com.onegini.testapp.BananaBestBank.domain.RequestData;
+import com.onegini.testapp.BananaBestBank.dto.TransactionDto;
 import com.onegini.testapp.BananaBestBank.exception.BananaBankBusinessException;
 import com.onegini.testapp.BananaBestBank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class AccountController {
@@ -31,5 +34,11 @@ public class AccountController {
             throws BananaBankBusinessException {
 
         accountService.decreaseUsersBalance(requestData, id);
+    }
+
+    @RequestMapping(value = "/balance/history/user/{userId}", method = RequestMethod.GET)
+    public List<TransactionDto> getAllUsersTransaction(@PathVariable("userId") Long id) throws BananaBankBusinessException {
+
+        return accountService.getAllUsersTransaction(id);
     }
 }
