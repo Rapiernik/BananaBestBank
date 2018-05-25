@@ -4,6 +4,7 @@ import com.onegini.testapp.BananaBestBank.domain.Account;
 import com.onegini.testapp.BananaBestBank.domain.RequestData;
 import com.onegini.testapp.BananaBestBank.dto.TransactionDto;
 import com.onegini.testapp.BananaBestBank.exception.BananaBankBusinessException;
+import com.onegini.testapp.BananaBestBank.exception.InvalidOrExpiredOrNoTokenException;
 import com.onegini.testapp.BananaBestBank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class AccountController {
 
     @RequestMapping(value = "/balance/decrease/user/{userId}", method = RequestMethod.POST)
     public void decreaseUsersBalance(@RequestBody RequestData requestData, @PathVariable("userId") Long id)
-            throws BananaBankBusinessException {
+            throws BananaBankBusinessException, InvalidOrExpiredOrNoTokenException {
 
         accountService.decreaseUsersBalance(requestData, id);
     }
