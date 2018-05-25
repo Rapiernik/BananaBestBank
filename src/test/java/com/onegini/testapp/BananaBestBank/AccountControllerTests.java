@@ -49,15 +49,20 @@ public class AccountControllerTests {
 	}
 
 	@Test
-	public void getCurrentBalanceExistingUserTest() throws Exception {
-
-		accountService.increaseUsersBalance(new RequestData(100d, null), 1111l);
-		accountService.increaseUsersBalance(new RequestData(200d, null), 1111l);
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+	public void getBalanceExistingUserTest() throws Exception {
 
 		mockMvc.perform(get("/balance/user/1111"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(100000)))
-				.andExpect(jsonPath("$.balance", is(800d)));
+				.andExpect(jsonPath("$.balance", is(500d)));
+	}
+
+	@Test
+	public void getBalanceNonExistingUserTest() throws Exception {
+
+		mockMvc.perform(get("/balance/user/1112"))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -69,6 +74,17 @@ public class AccountControllerTests {
 				.content(json)
 				.contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void increaseNonExistingUserBalanceTest() throws Exception {
+
+		String json = convertToJSON(new RequestData(300d, null));
+
+		mockMvc.perform(post("/balance/increase/user/1112")
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -84,7 +100,55 @@ public class AccountControllerTests {
 	}
 
 	@Test
+	public void decreaseNonExistingUserBalanceTest() throws Exception {
+
+		String generatedToken = "aMZk4KEkuU4WGbC";
+		String json = convertToJSON(new RequestData(400d, generatedToken));
+
+		mockMvc.perform(post("/balance/decrease/user/1112")
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void decreaseUserBalanceInvalidTokenTest() throws Exception {
+
+		String generatedToken = tokenService.getGeneratedToken(1111l);
+		String json = convertToJSON(new RequestData(400d, generatedToken + "a"));
+
+		mockMvc.perform(post("/balance/decrease/user/1111")
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	public void decreaseUserBalanceNoTokenTest() throws Exception {
+
+		String json = convertToJSON(new RequestData(400d, null));
+
+		mockMvc.perform(post("/balance/decrease/user/1111")
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+	public void decreaseUserBalanceTooBigValueTest() throws Exception {
+
+		String generatedToken = tokenService.getGeneratedToken(1111l);
+		String json = convertToJSON(new RequestData(501d, generatedToken));
+
+		mockMvc.perform(post("/balance/decrease/user/1111")
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 	public void getTransactionHistoryTest() throws Exception {
 
 		accountService.increaseUsersBalance(new RequestData(500d, null), 1111l);
@@ -102,48 +166,15 @@ public class AccountControllerTests {
 				.andExpect(jsonPath("$[2]type", is(TransactionType.DECREASE.toString())));
 	}
 
+	@Test
+	public void getTransactionHistoryNonExistingTest() throws Exception {
 
+		mockMvc.perform(get("/balance/history/user/1112"))
+				.andExpect(status().isNotFound());
+	}
 
-
-
-
-
-
-
-
-
-
-
-//	@Test
-//	public void getBalance() throws Exception {
-//
-//		Account account = new Account();
-//		account.setBalance(300);
-//		String json = convertToJSON(account);
-//
-//		mockMvc.perform(post("/balance/increase/user/1111").content(json).contentType(MediaType.APPLICATION_JSON_UTF8));
-//
-//		mockMvc.perform(get("/balance/user/1111"))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$.balance", is(800d)));
-//	}
-//
-//	@Test
-//	public void getBalanceNonExistingUser() throws Exception {
-//
-//		mockMvc.perform(get("/balance/user/1112"));
-//	}
-//
-//	@Test
-//	public void getToken() throws Exception {
-//
-//		mockMvc.perform(post("/balance/tokens/user/1111"))
-//				.andExpect(status().isOk());
-//	}
-//
 	private String convertToJSON(Object o) throws JsonProcessingException {
 		ObjectMapper om = new ObjectMapper();
 		return om.writeValueAsString(o);
 	}
-
 }
