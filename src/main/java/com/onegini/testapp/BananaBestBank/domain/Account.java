@@ -10,6 +10,13 @@ public class Account {
     private long id;
     private double balance;
 
+    public Account(double balance) {
+        this.balance = balance;
+    }
+
+    public Account() {
+    }
+
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
     @SequenceGenerator(name="seq", sequenceName = "accountSeq", initialValue=100000, allocationSize=100)
