@@ -8,6 +8,7 @@ import com.onegini.testapp.BananaBestBank.repository.UserRepository;
 import com.onegini.testapp.BananaBestBank.service.TokenService;
 import com.onegini.testapp.BananaBestBank.utils.SecureRandomTokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,9 @@ public class SecureRandomTokenServiceImpl implements TokenService {
     @Autowired
     private UserRepository userRepository;
 
+    @Value("${security.token.validation.seconds}")
+    private Long tokenValidationSeconds;
+
     @Override
     public String getGeneratedToken(Long userId) throws BananaBankBusinessException {
 
@@ -32,7 +36,7 @@ public class SecureRandomTokenServiceImpl implements TokenService {
             Token token = new Token();
             token.setCurrentValue(tokenValue);
             token.setUser(userById.get());
-            token.setExpirationDateTime(LocalDateTime.now().plusSeconds(90));
+            token.setExpirationDateTime(LocalDateTime.now().plusSeconds(tokenValidationSeconds));
             tokenRepository.deleteAll();
             tokenRepository.save(token);
         } else {
