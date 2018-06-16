@@ -30,16 +30,16 @@ import com.onegini.testapp.BananaBestBank.service.AccountService;
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    TokenRepository tokenRepository;
+    private TokenRepository tokenRepository;
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Override
     public Account checkUsersBalance(Long userId) throws BananaBankBusinessException {

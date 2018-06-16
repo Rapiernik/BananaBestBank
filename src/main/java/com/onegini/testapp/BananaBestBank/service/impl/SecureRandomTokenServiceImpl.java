@@ -17,10 +17,10 @@ import java.util.Optional;
 public class SecureRandomTokenServiceImpl implements TokenService {
 
     @Autowired
-    TokenRepository tokenRepository;
+    private TokenRepository tokenRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public String getGeneratedToken(Long userId) throws BananaBankBusinessException {

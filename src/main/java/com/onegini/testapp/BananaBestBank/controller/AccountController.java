@@ -15,7 +15,7 @@ import java.util.List;
 public class AccountController {
 
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     @RequestMapping(value = "/balance/user/{userId}", method = RequestMethod.GET)
     public Account checkBalanceByUserId(@PathVariable("userId") Long id) throws BananaBankBusinessException {

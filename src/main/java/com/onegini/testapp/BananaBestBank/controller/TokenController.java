@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
 
     @RequestMapping(value = "/balance/tokens/user/{userId}", method = RequestMethod.POST)
     public ResponseEntity<String> getTokenOperation(@PathVariable("userId") Long id) throws BananaBankBusinessException {
