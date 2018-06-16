@@ -27,6 +27,9 @@ public class AccountController {
     public void increaseUsersBalance(@RequestBody RequestData requestData, @PathVariable("userId") Long id)
             throws BananaBankBusinessException {
 
+        if(requestData.getValue() <= 0) {
+            throw new BananaBankBusinessException("Amount of money must be greater than 0!");
+        }
         accountService.increaseUsersBalance(requestData, id);
     }
 
@@ -34,6 +37,9 @@ public class AccountController {
     public void decreaseUsersBalance(@RequestBody RequestData requestData, @PathVariable("userId") Long id)
             throws BananaBankBusinessException, InvalidOrExpiredOrNoTokenException {
 
+        if(requestData.getValue() <= 0) {
+            throw new BananaBankBusinessException("Amount of money must be greater than 0!");
+        }
         accountService.decreaseUsersBalance(requestData, id);
     }
 
